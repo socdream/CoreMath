@@ -143,17 +143,15 @@ namespace CoreMath
         {
             // assumes determinant is not 0
             // that is, the matrix does have an inverse
-            int n = 4; // cols
+            var n = 4; // cols
             var result = new float[matrix.Length]; // make a copy of matrix
 
             for (int i = 0; i < n; ++i)
                 for (int j = 0; j < n; ++j)
                     result[i * n + j] = matrix[i * n + j];
 
-            float[] lum; // combined lower & upper
-            int[] perm;
-            int toggle;
-            toggle = matrix.MatrixDecompose(out lum, out perm);
+            // combined lower & upper
+            var toggle = matrix.MatrixDecompose(out float[] lum, out int[] perm);
 
             var b = new float[n];
 
@@ -165,7 +163,8 @@ namespace CoreMath
                     else
                         b[j] = 0f;
 
-                var x = Helper(lum, b); // 
+                var x = Helper(lum, b);
+
                 for (int j = 0; j < n; ++j)
                     result[j * n + i] = x[j];
             }
@@ -285,12 +284,9 @@ namespace CoreMath
 
         public static float MatrixDeterminant(this float[] matrix)
         {
-            float[] lum;
-            int[] perm;
-
             var cols = 4;
 
-            int toggle = MatrixDecompose(matrix, out lum, out perm);
+            var toggle = MatrixDecompose(matrix, out float[] lum, out int[] perm);
             var result = (float)toggle;
 
             for (int i = 0; i < cols; ++i)
@@ -301,10 +297,11 @@ namespace CoreMath
 
         public static float[] MatrixProduct(this float[] matrixA, float[] matrixB)
         {
-            int aRows = 4; // matrixA.Length;
-            int aCols = 4; // matrixA[0].Length;
-            int bRows = 4; // matrixB.Length;
-            int bCols = 4; // matrixB[0].Length;
+            var aRows = 4; // matrixA.Length;
+            var aCols = 4; // matrixA[0].Length;
+            var bRows = 4; // matrixB.Length;
+            var bCols = 4; // matrixB[0].Length;
+
             if (aCols != bRows)
                 throw new Exception("Non-conformable matrices");
 
@@ -342,7 +339,7 @@ namespace CoreMath
         public static float[] ExtractLower(this float[] lum)
         {
             // lower part of an LU Doolittle decomposition (dummy 1.0s on diagonal, 0.0s above)
-            int n = 4; //cols
+            var n = 4; //cols
             var result = new float[lum.Length];
 
             for (int i = 0; i < n; ++i)

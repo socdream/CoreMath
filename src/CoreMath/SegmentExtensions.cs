@@ -9,9 +9,7 @@ namespace CoreMath
     {
         public static float[] SegmentClosestPoint(this float[] a, float[] b, float[] point)
         {
-            float dist;
-
-            return a.SegmentClosestPoint(b, point, out dist);
+            return a.SegmentClosestPoint(b, point, out float dist);
         }
         public static float[] SegmentClosestPoint(this float[] a, float[] b, float[] point, out float dist){
             var dir = b.Substract(a);
