@@ -1,10 +1,10 @@
-# CoreImaging
+# CoreMath
 
 .NET Core library to extend the Math capabilities of the framework
 
 ## Installation
 
-Install from NuGet: CoreMath package.
+Install from NuGet: JavierOltra.CoreMath package.
 
 ## Usage
 
