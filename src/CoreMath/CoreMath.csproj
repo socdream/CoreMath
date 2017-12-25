@@ -8,11 +8,11 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <PackageVersion>0.0.1</PackageVersion>
+    <PackageVersion>0.0.2</PackageVersion>
     <Authors>Javier Oltra</Authors>
     <Description>.Net Core Math extension methods for 3d Engines</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <PackageReleaseNotes>Added angle between vectors methods</PackageReleaseNotes>
     <Copyright>Copyright 2017 (c) Javier Oltra. All rights reserved.</Copyright>
     <PackageTags>math opengl matrix vector euler quaternion</PackageTags>
     <PackageLicenseUrl>https://raw.githubusercontent.com/socdream/CoreMath/master/LICENSE.md</PackageLicenseUrl>

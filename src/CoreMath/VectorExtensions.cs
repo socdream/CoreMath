@@ -159,5 +159,29 @@ namespace CoreMath
 
             return result;
         }
+
+        public static float AngleBetweenVectors(this float[] a, float[] b)
+        {
+            var cosa = a.VectorDotProduct(b) / (float)Math.Sqrt(a.VectorLengthSq() * b.VectorLengthSq());
+            if (cosa >= 1f)
+                return 0f;
+            else if (cosa <= -1f)
+                return (float)Math.PI;
+            else
+                return (float)Math.Acos(cosa);
+        }
+
+        public static float AngleBetweenVectorsNormalized(this float[] a, float[] b)
+        {
+            var cosa = a.VectorDotProduct(b);
+
+            if (cosa >= 1f)
+                return 0f;
+
+            else if (cosa <= -1f)
+                return (float)Math.PI;
+            else
+                return (float)Math.Acos(cosa);
+        }
     }
 }
