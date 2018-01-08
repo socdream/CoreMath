@@ -40,5 +40,19 @@ namespace CoreMath.Test
             Assert.IsTrue(angle1 <= expected1 + epsilon && angle1 >= expected1 - epsilon);
             Assert.IsTrue(angle2 <= expected2 + epsilon && angle2 >= expected2 - epsilon);
         }
+
+        [TestMethod]
+        public void TestSegments()
+        {
+            var a = new float[] { -100f, 50f, 50f };
+            var b = new float[] { 100f, 50f, 50f };
+            var pos = new float[] { 0, 40f, 50f };
+
+            Assert.AreEqual(100.0f, a.SegmentPointDistanceSquared(b, pos));
+
+            pos = new float[] { 10f, 45f, 50f };
+
+            Assert.AreEqual(25.0f, a.SegmentPointDistanceSquared(b, pos));
+        }
     }
 }
