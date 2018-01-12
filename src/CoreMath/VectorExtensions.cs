@@ -72,6 +72,11 @@ namespace CoreMath
             return (float)Math.Sqrt(vector.VectorLengthSq());
         }
 
+        public static bool IsVectorNormalized(this float[] vector, float epsilon = float.Epsilon)
+        {
+            return vector.VectorLengthSq() < epsilon;
+        }
+
         public static float[] VectorTransform(this float[] vector, float[] matrix)
         {
             return new float[] {
@@ -150,12 +155,18 @@ namespace CoreMath
             return result;
         }
 
-        public static float[] VectorScale(this float[] a, float b)
+        /// <summary>
+        /// Scales a vector by the given vector (vector * factor)
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="factor"></param>
+        /// <returns></returns>
+        public static float[] VectorScale(this float[] vector, float factor)
         {
-            var result = new float[a.Length];
+            var result = new float[vector.Length];
 
-            for (var i = 0; i < a.Length; i++)
-                result[i] = a[i] * b;
+            for (var i = 0; i < vector.Length; i++)
+                result[i] = vector[i] * factor;
 
             return result;
         }
@@ -182,6 +193,27 @@ namespace CoreMath
                 return (float)Math.PI;
             else
                 return (float)Math.Acos(cosa);
+        }
+
+        /// <summary>
+        /// Returns an axis aligned with the given vector
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        public static List<float[]> VectorAxis(this float[] vector)
+        {
+            var v0 = vector.NormalizeVector();
+
+            var v1 = new float[0];
+
+            if ((v0.Z() < -0.01) || (v0.Z() > 0.01))
+                v1 = new float[] { v0.Z(), v0.Z(), -v0.X() - v0.Y() }.NormalizeVector();
+            else
+                v1 = new float[] { -v0.Y() - v0.Z(), v0.X(), v0.X() }.NormalizeVector();
+
+            var v2 = v1.VectorCrossProduct(v0).NormalizeVector();
+
+            return new List<float[]> { v0, v1, v2 };
         }
     }
 }
