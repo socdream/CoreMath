@@ -23,6 +23,13 @@ namespace CoreMath
         {
             return vector[3];
         }
+
+        /// <summary>
+        /// Performs the cross product between 2 3d vectors
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static float[] VectorCrossProduct(this float[] a, float[] b)
         {
             return new float[]
@@ -45,18 +52,27 @@ namespace CoreMath
             return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
         }
 
+        /// <summary>
+        /// normalizes a vector of any length
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
         public static float[] NormalizeVector(this float[] vector)
         {
             var length = vector.VectorLength();
+            var result = new float[vector.Length];
 
-            return new float[]
-            {
-                vector[0] / length,
-                vector[1] / length,
-                vector[2] / length
-            };
+            for (int i = 0; i < vector.Length; i++)
+                result[i] = vector[i] / length;
+
+            return result;
         }
 
+        /// <summary>
+        /// Gets the squared length of a vector of any length
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
         public static float VectorLengthSq(this float[] vector)
         {
             var res = 0f;
@@ -67,11 +83,33 @@ namespace CoreMath
             return res;
         }
 
+        /// <summary>
+        /// Gets the length of a vector of any length
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
         public static float VectorLength(this float[] vector)
         {
             return (float)Math.Sqrt(vector.VectorLengthSq());
         }
 
+        /// <summary>
+        /// Returns if a vector is normalized
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="epsilon"></param>
+        /// <returns></returns>
+        public static bool IsVectorNormalized(this float[] vector, float epsilon = float.Epsilon)
+        {
+            return vector.VectorLengthSq() < epsilon;
+        }
+
+        /// <summary>
+        /// Transform the given vertex using a 4x4 matrix
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
         public static float[] VectorTransform(this float[] vector, float[] matrix)
         {
             return new float[] {
@@ -81,6 +119,11 @@ namespace CoreMath
             };
         }
 
+        /// <summary>
+        /// Extract translation from a 4x4 matrix
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
         public static float[] TranslationFromMatrix(this float[] matrix)
         {
             return new float[]
@@ -91,6 +134,11 @@ namespace CoreMath
             };
         }
 
+        /// <summary>
+        /// Extract the scaling from a 4x4 matrix
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
         public static float[] ScalingFromMatrix(this float[] matrix)
         {
             var sx = new float[] { matrix[0], matrix[1], matrix[2] }.VectorLength();
@@ -110,6 +158,11 @@ namespace CoreMath
             };
         }
         
+        /// <summary>
+        /// Convert degrees to radians
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static float[] ToRadians(this float[] value)
         {
             var result = new float[value.Length];
@@ -120,6 +173,11 @@ namespace CoreMath
             return result;
         }
 
+        /// <summary>
+        /// Convert gradians to degrees
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static float[] ToDegrees(this float[] value)
         {
             var result = new float[value.Length];
@@ -130,6 +188,12 @@ namespace CoreMath
             return result;
         }
 
+        /// <summary>
+        /// Adds 2 vectors of the same length
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static float[] Add(this float[] a, float[] b)
         {
             var result = new float[a.Length];
@@ -140,6 +204,12 @@ namespace CoreMath
             return result;
         }
 
+        /// <summary>
+        /// Substracts 2 vectors of the same length
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static float[] Substract(this float[] a, float[] b)
         {
             var result = new float[a.Length];
@@ -150,16 +220,28 @@ namespace CoreMath
             return result;
         }
 
-        public static float[] VectorScale(this float[] a, float b)
+        /// <summary>
+        /// Scales a vector by the given vector (vector * factor)
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="factor"></param>
+        /// <returns></returns>
+        public static float[] VectorScale(this float[] vector, float factor)
         {
-            var result = new float[a.Length];
+            var result = new float[vector.Length];
 
-            for (var i = 0; i < a.Length; i++)
-                result[i] = a[i] * b;
+            for (var i = 0; i < vector.Length; i++)
+                result[i] = vector[i] * factor;
 
             return result;
         }
 
+        /// <summary>
+        /// Extracts the angle in radians between 2 vectors
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static float AngleBetweenVectors(this float[] a, float[] b)
         {
             var cosa = a.VectorDotProduct(b) / (float)Math.Sqrt(a.VectorLengthSq() * b.VectorLengthSq());
@@ -171,6 +253,12 @@ namespace CoreMath
                 return (float)Math.Acos(cosa);
         }
 
+        /// <summary>
+        /// Extracts the angle in radians between 2 normalized vectors
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static float AngleBetweenVectorsNormalized(this float[] a, float[] b)
         {
             var cosa = a.VectorDotProduct(b);
@@ -182,6 +270,27 @@ namespace CoreMath
                 return (float)Math.PI;
             else
                 return (float)Math.Acos(cosa);
+        }
+
+        /// <summary>
+        /// Returns an axis aligned with the given vector
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        public static List<float[]> VectorAxis(this float[] vector)
+        {
+            var v0 = vector.NormalizeVector();
+
+            var v1 = new float[0];
+
+            if ((v0.Z() < -0.01) || (v0.Z() > 0.01))
+                v1 = new float[] { v0.Z(), v0.Z(), -v0.X() - v0.Y() }.NormalizeVector();
+            else
+                v1 = new float[] { -v0.Y() - v0.Z(), v0.X(), v0.X() }.NormalizeVector();
+
+            var v2 = v1.VectorCrossProduct(v0).NormalizeVector();
+
+            return new List<float[]> { v0, v1, v2 };
         }
     }
 }
