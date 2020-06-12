@@ -24,6 +24,23 @@ namespace CoreMath
             return vector[3];
         }
 
+        public static int X(this int[] vector)
+        {
+            return vector[0];
+        }
+        public static int Y(this int[] vector)
+        {
+            return vector[1];
+        }
+        public static int Z(this int[] vector)
+        {
+            return vector[2];
+        }
+        public static int W(this int[] vector)
+        {
+            return vector[3];
+        }
+
         /// <summary>
         /// Performs the cross product between 2 3d vectors
         /// </summary>
@@ -200,6 +217,15 @@ namespace CoreMath
 
             for (var i = 0; i < a.Length; i++)
                 result[i] = a[i] + b[i];
+
+            return result;
+        }
+        public static float[] MultiplyComponents(this float[] a, float[] b)
+        {
+            var result = new float[a.Length];
+
+            for (var i = 0; i < a.Length; i++)
+                result[i] = a[i] * b[i];
 
             return result;
         }
