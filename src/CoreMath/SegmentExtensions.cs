@@ -11,6 +11,14 @@ namespace CoreMath
         {
             return a.SegmentClosestPoint(b, point, out float dist);
         }
+        /// <summary>
+        /// Computes the closes point from a point to the segment. These need to be 3 components vectors
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="point"></param>
+        /// <param name="dist"></param>
+        /// <returns></returns>
         public static float[] SegmentClosestPoint(this float[] a, float[] b, float[] point, out float dist){
             var dir = b.Substract(a);
 

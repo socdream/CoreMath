@@ -38,5 +38,17 @@ namespace CoreMath
 
             return value;
         }
+
+        public static float[] GetBezierPoint(this float[] start, float[] target1, float[] target2, float[] end, float t)
+        {
+            float omt = 1f - t;
+            float omt2 = omt * omt;
+            float t2 = t * t;
+
+            return start.VectorScale(omt2 * omt)
+                .Add(target1.VectorScale(3f * omt2 * t))
+                .Add(target2.VectorScale(3f * omt * t2))
+                .Add(end.VectorScale(t2 * t));
+        }
     }
 }

@@ -186,11 +186,8 @@ namespace CoreMath
         /// <returns></returns>
         public static float[] QuaternionRotateFromTo(this float[] sourceDirection, float[] targetDirection)
         {
-            /*if (!sourceDirection.IsNormalized())
-                sourceDirection.Normalize();
-
-            if (!targetDirection.IsNormalized())
-                targetDirection.Normalize();*/
+            if (sourceDirection.EqualsMatrix(targetDirection))
+                return new float[] { 0, 0, 0, 1 };
 
             // If sourceDirection == targetDirection, the cross product comes out zero, and normalization would fail. In that case, pick an arbitrary axis.
             var axis = sourceDirection.VectorCrossProduct(targetDirection);
@@ -206,7 +203,7 @@ namespace CoreMath
                 return new float[] { axis[0] * sinHalfAngle, axis[1] * sinHalfAngle, axis[2] * sinHalfAngle, cosHalfAngle };
             }
             else
-                return new float[] { 1f, 0f, 0f, 0f };
+                return new float[] { 0f, 1f, 0f, 0f };
 
         }
 
@@ -255,5 +252,57 @@ namespace CoreMath
             // Lerp and renormalize.
             return quat.VectorScale(a * sign).Add(target.VectorScale(b)).NormalizeVector();
         }
+
+        /// <summary>
+        /// Computes a quaternion rotating around a given normalized axis an angle of given radians
+        /// </summary>
+        /// <param name="axis">Normalized 3D axis of rotation</param>
+        /// <param name="angle">Angle in radians</param>
+        /// <returns></returns>
+        public static float[] QuaternionFromRotation(this float[] axis, float angle)
+        {
+            var semiangle = angle / 2;
+            var sin = (float)Math.Sin(semiangle);
+            return new float[]
+            {
+                axis[0] * sin,
+                axis[1] * sin,
+                axis[2] * sin,
+                (float)Math.Cos(semiangle)
+            };
+        }
+
+        public static float QuaternionLength(this float[] quaternion) => (float)Math.Sqrt((quaternion[3] * quaternion[3]) + quaternion.Take(3).ToArray().VectorLengthSq());
+
+        public static float[] NormalizeQuaternion(this float[] quaternion) => quaternion.VectorScale(1 / quaternion.QuaternionLength());
+
+        public static float[] QuaternionToAxisAngle(this float[] q)
+        {
+            if (Math.Abs(q[3]) > 1.0f)
+            {
+               q = q.NormalizeQuaternion();
+            }
+
+            var w = 2.0f * (float)Math.Acos(q[3]);
+
+            var den = (float)Math.Sqrt(1.0 - (q[3] * q[3]));
+            if (den > 0.0001f)
+            {
+                return new float[]
+                {
+                    q[0] / den,
+                    q[1] / den,
+                    q[2] / den,
+                    w
+                };
+            }
+            else
+            {
+                // This occurs when the angle is zero.
+                // Not a problem: just set an arbitrary normalized axis.
+                return new float[] { 1, 0, 0, w };
+            }
+        }
+
     }
 }

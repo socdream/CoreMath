@@ -7,15 +7,12 @@ namespace CoreMath
 {
     public static class MatrixExtensions
     {
-        public static float[] IdentityMatrix(this float[] matrix)
-        {
-            return new float[] {
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-            };
-        }
+        public static float[] IdentityMatrix(this float[] matrix) => new float[] {
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        };
 
         public static bool EqualsMatrix(this float[] matrix, float[] other, float epsilon = float.Epsilon)
         {
@@ -487,13 +484,57 @@ namespace CoreMath
             };
         }
 
-        public static float[] MatrixCompose(this float[] matrix, float[] position, float[] quaternion, float[] scale)
+        public static float[] MatrixFromAxisAngle(this float[] axis, float angle)
         {
-            var result = quaternion.MatrixFromQuaternion();
+            // normalize and create a local copy of the vector.
+            axis = axis.NormalizeVector();
 
-            result = result.ScaleMatrix(scale);
+            // calculate angles
+            var cos = (float)Math.Cos(-angle);
+            var sin = (float)Math.Sin(-angle);
+            var t = 1.0f - cos;
 
-            return result.SetPositionMatrix(position);
+            // do the conversion math once
+            float tXX = t * axis[0] * axis[0];
+            float tXY = t * axis[0] * axis[1];
+            float tXZ = t * axis[0] * axis[2];
+            float tYY = t * axis[1] * axis[1];
+            float tYZ = t * axis[1] * axis[2];
+            float tZZ = t * axis[2] * axis[2];
+
+            float sinX = sin * axis[0];
+            float sinY = sin * axis[1];
+            float sinZ = sin * axis[2];
+
+            return new float[]{
+                tXX + cos,
+                tXY - sinZ,
+                tXZ + sinY,
+                0,
+                tXY + sinZ,
+                tYY + cos,
+                tYZ - sinX,
+                0,
+                tXZ - sinY,
+                tYZ + sinX,
+                tZZ + cos,
+                0,
+                0,
+                0,
+                0,
+                1
+            };
+        }
+
+        public static float[] MatrixCompose(this float[] matrix, float[] position, float[] rotation, float[] scale)
+        {
+            var rotating = rotation.MatrixFromQuaternion();
+
+            var scaling = scale.MatrixFromScale();
+
+            var positioning = IdentityMatrix(null).SetPositionMatrix(position);
+
+            return scaling.MatrixProduct(rotating).MatrixProduct(positioning);
         }
 
         public static float[] SetPositionMatrix(this float[] matrix, float[] position)
@@ -527,7 +568,16 @@ namespace CoreMath
             return result;
         }
 
-        public static float[] MatrixFromQuaternion(this float[] quaternion)
+        public static float[] MatrixFromScale(this float[] scale)
+        {
+            var result = IdentityMatrix(null);
+            result[0] = scale[0];
+            result[5] = scale[1];
+            result[10] = scale[2];
+            return result;
+        }
+
+        public static float[] MatrixFromQuaternionOld(this float[] quaternion)
         {
             var x = quaternion[0];
             var y = quaternion[1];
@@ -573,6 +623,13 @@ namespace CoreMath
 
             return result;
         }
+
+        public static float[] MatrixFromQuaternion(this float[] quaternion)
+        {
+            var axisAngle = quaternion.QuaternionToAxisAngle();
+            return axisAngle.Take(3).ToArray().MatrixFromAxisAngle(axisAngle[3]);
+        }
+
 
         public static float[] MatrixFromEuler(this float[] euler, EulerOrder order)
         {
